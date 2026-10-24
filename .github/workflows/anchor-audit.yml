@@ -29,6 +29,10 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
+      - name: Setup Solana Environment
+        uses: metadaoproject/setup-solana@v1
+        with:
+          solana-cli-version: ${{ env.SOLANA_CLI_VERSION || '1.18.18' }}
 
       - name: 🦀 Setup Rust Toolchain
         uses: dtolnay/rust-toolchain@stable
