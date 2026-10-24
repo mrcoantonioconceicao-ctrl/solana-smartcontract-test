@@ -30,9 +30,8 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
       - name: Setup Solana Environment
-        uses: metadaoproject/setup-solana@v1
-        with:
-          solana-cli-version: ${{ env.SOLANA_CLI_VERSION || '1.18.18' }}
+        
+        
 
       - name: 🦀 Setup Rust Toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -61,9 +60,13 @@ jobs:
 
       - name: ⚙️ Install Solana Tool Suite
         run: |
-          sh -c "$(curl --retry 5 --retry-delay 5 --connect-timeout 30 -sSfL https://release.solana.com/v${{ env.SOLANA_CLI_VERSION }}/install)"
-          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
-          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          echo "A instalar Solana CLI de forma nativa e segura..."
+          VERSION=${{ env.SOLANA_CLI_VERSION || 'v1.18.18' }}
+          URL="https://github.com/solana-labs/solana/releases/download/${VERSION}/solana-release-x86_64-unknown-linux-gnu.tar.bz2"
+          curl --retry 5 --retry-delay 5 --connect-timeout 30 -L -o solana.tar.bz2 "$URL" || wget -t 5 -T 30 -O solana.tar.bz2 "$URL"
+          tar jxf solana.tar.bz2
+          echo "$PWD/solana-release/bin" >> $GITHUB_PATH
+          export PATH="$PWD/solana-release/bin:$PATH"
           solana --version
 
       - name: ⚓ Install Anchor CLI (${{ env.ANCHOR_CLI_VERSION }})
